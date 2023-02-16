@@ -2,6 +2,7 @@ import EventModel from "./EventModel.model";
 import * as mysql2 from "mysql2/promise";
 import BaseService from '../../common/BaseService';
 import IAdapterOptions from '../../common/IAdapterOptions.interface';
+import IAddEvent from './dto/IAddEventDto.dto';
 
 interface IEventAdapterOptions extends IAdapterOptions {
 
@@ -28,6 +29,10 @@ class EventService extends BaseService<EventModel, IEventAdapterOptions>{
         event.discountDueDate = data?.discount_due_date;
 
         return event;
+    }
+
+    public async add(data: IAddEvent): Promise<EventModel> {
+        return this.baseAdd(data, DefaultEventAdapterOptions);
     }
 }
 

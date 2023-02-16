@@ -1,6 +1,9 @@
 import IModel from './IModel.interface';
 import * as mysql2 from "mysql2/promise";
 import IAdapterOptions from './IAdapterOptions.interface';
+import IServiceData from './IServiceData.interface';
+import EventModel from '../components/event/EventModel.model';
+import { DefaultEventAdapterOptions } from '../components/event/EventService.service';
 
 abstract class BaseService<ReturnModel extends IModel, AdapterOptions extends IAdapterOptions>{
     private _db: mysql2.Connection;
@@ -64,7 +67,7 @@ abstract class BaseService<ReturnModel extends IModel, AdapterOptions extends IA
             })
     }
 
-    public async getAllByFieldNameAndValue(fieldName: string, value: any, options: AdapterOptions): Promise<ReturnModel[]> {
+    protected async getAllByFieldNameAndValue(fieldName: string, value: any, options: AdapterOptions): Promise<ReturnModel[]> {
 
         const tableName = this.tableName();
 
@@ -90,6 +93,36 @@ abstract class BaseService<ReturnModel extends IModel, AdapterOptions extends IA
                     });
             }
         )
+    }
+
+    protected async baseAdd(data: IServiceData, options: AdapterOptions): Promise<ReturnModel> {
+
+        const tableName = this.tableName();
+
+        return new Promise((resolve, reject) => {
+
+            const properties = Object.getOwnPropertyNames(data);
+            const sqlPairs = properties.map(property => "`" + property + "`" + "=?").join(", ");
+            const values = properties.map(property => data[property]);
+
+            const sql: string = `INSERT INTO \`${tableName}\` SET ${sqlPairs} ;`;
+
+            this.db.execute(sql, values)
+                .then(async result => {
+                    const info: any = result;
+                    const newItemId = +(info[0]?.insertId);
+                    const newItem: ReturnModel | null = await this.getById(newItemId, options);
+
+                    if (newItem === null) {
+                        return reject({ message: 'Could not add into the ' + tableName + 'table!', });
+                    }
+
+                    resolve(newItem);
+                })
+                .catch(error => {
+                    reject(error);
+                })
+        })
     }
 }
 
