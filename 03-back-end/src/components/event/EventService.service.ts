@@ -39,6 +39,10 @@ class EventService extends BaseService<EventModel, IEventAdapterOptions>{
     public async editById(eventId: number, data: IEditEvent): Promise<EventModel> {
         return this.baseEditById(eventId, data, DefaultEventAdapterOptions);
     }
+
+    public async deleteById(eventId: number): Promise<boolean> {
+        return this.baseDelete(eventId);
+    }
 }
 
 export default EventService;

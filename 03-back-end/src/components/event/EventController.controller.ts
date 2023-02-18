@@ -94,6 +94,31 @@ class EventController {
             });
 
     }
+
+    async delete(req: Request, res: Response) {
+        const id: number = +req.params?.id;
+
+        this.eventService.getById(id, {})
+            .then(result => {
+                if (result === null) {
+                    return res.sendStatus(404);
+                }
+
+                this.eventService.deleteById(id)
+                    .then(result => {
+                        res.send('This event has been deleted!');
+                    })
+                    .catch(error => {
+                        res.status(400).send(error?.message);
+                    })
+
+
+            })
+            .catch(error => {
+                res.status(500).send(error?.message);
+            });
+
+    }
 }
 
 export default EventController;
