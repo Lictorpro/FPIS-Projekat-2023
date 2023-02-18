@@ -3,6 +3,7 @@ import * as mysql2 from "mysql2/promise";
 import BaseService from '../../common/BaseService';
 import IAdapterOptions from '../../common/IAdapterOptions.interface';
 import IAddEvent from './dto/IAddEventDto.dto';
+import IEditEvent from './dto/IEditEventDto.dto';
 
 interface IEventAdapterOptions extends IAdapterOptions {
 
@@ -33,6 +34,10 @@ class EventService extends BaseService<EventModel, IEventAdapterOptions>{
 
     public async add(data: IAddEvent): Promise<EventModel> {
         return this.baseAdd(data, DefaultEventAdapterOptions);
+    }
+
+    public async editById(eventId: number, data: IEditEvent): Promise<EventModel> {
+        return this.baseEditById(eventId, data, DefaultEventAdapterOptions);
     }
 }
 

@@ -11,7 +11,8 @@ class EventRouter implements IRouter {
 
         application.get("/api/event", eventController.getAll.bind(eventController));
         application.get("/api/event/:id", eventController.getById.bind(eventController));
-        application.post("/api/event", eventController.addEvent.bind(eventController));
+        application.post("/api/event", eventController.add.bind(eventController));
+        application.put("/api/event/:id", eventController.edit.bind(eventController));
     }
 }
 
