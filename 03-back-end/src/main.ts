@@ -6,6 +6,7 @@ import IApplicationResources from './common/IApplicationResources.interface';
 import * as mysql2 from 'mysql2/promise';
 import EventService from './components/event/EventService.service';
 import PromoCodeService from './components/promo-code/PromoCodeService';
+import UserService from './components/user/UserService.service';
 
 async function main() {
     const config: IConfig = DevConfig;
@@ -24,7 +25,8 @@ async function main() {
         databaseConnection: db,
         services: {
             event: new EventService(db),
-            promoCode: new PromoCodeService(db)
+            promoCode: new PromoCodeService(db),
+            user: new UserService(db)
         }
     };
 
