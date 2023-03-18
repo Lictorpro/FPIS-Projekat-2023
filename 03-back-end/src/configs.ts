@@ -1,5 +1,6 @@
 import IConfig from "./common/IConfig.interface";
 import EventRouter from './components/event/EventRouter.router';
+import PromoCodeRouter from './components/promo-code/PromoCodeRouter.router';
 
 const DevConfig: IConfig = {
     server: {
@@ -16,6 +17,7 @@ const DevConfig: IConfig = {
     },
     routers: [
         new EventRouter(),
+        new PromoCodeRouter(),
     ]
 }
 
