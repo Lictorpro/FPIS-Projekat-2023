@@ -6,8 +6,7 @@ import IRouter from '../../common/IRouter.interface';
 
 class EventRouter implements IRouter {
     public setupRoutes(application: express.Application, resources: IApplicationResources) {
-        const eventService: EventService = new EventService(resources.databaseConnection);
-        const eventController: EventController = new EventController(eventService);
+        const eventController: EventController = new EventController(resources.services);
 
         application.get("/api/event", eventController.getAll.bind(eventController));
         application.get("/api/event/:id", eventController.getById.bind(eventController));

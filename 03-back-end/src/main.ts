@@ -4,19 +4,26 @@ import { DevConfig } from "./configs";
 import IConfig from "./common/IConfig.interface";
 import IApplicationResources from './common/IApplicationResources.interface';
 import * as mysql2 from 'mysql2/promise';
+import EventService from './components/event/EventService.service';
 
 async function main() {
     const config: IConfig = DevConfig;
+
+    const db = await mysql2.createConnection({
+        host: config.database.host,
+        port: config.database.port,
+        user: config.database.user,
+        password: config.database.password,
+        database: config.database.database,
+        charset: config.database.charset,
+        timezone: config.database.timezone
+    });
+
     const resources: IApplicationResources = {
-        databaseConnection: await mysql2.createConnection({
-            host: config.database.host,
-            port: config.database.port,
-            user: config.database.user,
-            password: config.database.password,
-            database: config.database.database,
-            charset: config.database.charset,
-            timezone: config.database.timezone
-        })
+        databaseConnection: db,
+        services: {
+            event: new EventService(db)
+        }
     };
 
     const application: express.Application = express();

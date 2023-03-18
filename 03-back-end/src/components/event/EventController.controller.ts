@@ -2,16 +2,12 @@ import EventService, { DefaultEventAdapterOptions } from './EventService.service
 import { Request, Response } from 'express';
 import { AddEventValidator, IAddEventDto } from './dto/IAddEventDto.dto';
 import { EditEventValidator, IEditEventDto } from './dto/IEditEventDto.dto';
-class EventController {
-    private eventService: EventService;
-
-    constructor(eventService: EventService) {
-        this.eventService = eventService;
-    }
+import BaseController from '../../common/BaseController';
+class EventController extends BaseController {
 
     async getAll(req: Request, res: Response) {
 
-        this.eventService.getAll(DefaultEventAdapterOptions)
+        this.services.event.getAll(DefaultEventAdapterOptions)
             .then(result => {
                 res.send(result);
             }).catch(error => {
@@ -23,7 +19,7 @@ class EventController {
 
         const id: number = +req.params?.id;
 
-        this.eventService.getById(id, DefaultEventAdapterOptions)
+        this.services.event.getById(id, DefaultEventAdapterOptions)
             .then(result => {
 
                 if (result === null) {
@@ -43,7 +39,7 @@ class EventController {
             return res.status(400).send(AddEventValidator.errors);
         }
 
-        this.eventService.add({
+        this.services.event.add({
             name: data.name,
             price: data.price,
             number_of_seats: data.numberOfSeats,
@@ -67,13 +63,13 @@ class EventController {
             return res.status(400).send(EditEventValidator.errors);
         }
 
-        this.eventService.getById(id, {})
+        this.services.event.getById(id, {})
             .then(result => {
                 if (result === null) {
                     return res.sendStatus(404);
                 }
 
-                this.eventService.editById(id, {
+                this.services.event.editById(id, {
                     name: data.name,
                     price: data.price,
                     number_of_seats: data.numberOfSeats,
@@ -98,13 +94,13 @@ class EventController {
     async delete(req: Request, res: Response) {
         const id: number = +req.params?.id;
 
-        this.eventService.getById(id, {})
+        this.services.event.getById(id, {})
             .then(result => {
                 if (result === null) {
                     return res.sendStatus(404);
                 }
 
-                this.eventService.deleteById(id)
+                this.services.event.deleteById(id)
                     .then(result => {
                         res.send('This event has been deleted!');
                     })

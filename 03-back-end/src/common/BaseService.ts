@@ -2,8 +2,6 @@ import IModel from './IModel.interface';
 import * as mysql2 from "mysql2/promise";
 import IAdapterOptions from './IAdapterOptions.interface';
 import IServiceData from './IServiceData.interface';
-import EventModel from '../components/event/EventModel.model';
-import { DefaultEventAdapterOptions } from '../components/event/EventService.service';
 
 abstract class BaseService<ReturnModel extends IModel, AdapterOptions extends IAdapterOptions>{
     private _db: mysql2.Connection;
@@ -161,7 +159,7 @@ abstract class BaseService<ReturnModel extends IModel, AdapterOptions extends IA
         });
     }
 
-    protected async baseDelete(id:number): Promise<boolean>{
+    protected async baseDelete(id: number): Promise<boolean> {
         const tableName = this.tableName();
 
         return new Promise((resolve, reject) => {
