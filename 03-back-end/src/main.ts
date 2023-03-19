@@ -24,11 +24,15 @@ async function main() {
     const resources: IApplicationResources = {
         databaseConnection: db,
         services: {
-            event: new EventService(db),
-            promoCode: new PromoCodeService(db),
-            user: new UserService(db)
+            event: null,
+            promoCode: null,
+            user: null
         }
     };
+
+    resources.services.event = new EventService(resources);
+    resources.services.promoCode = new PromoCodeService(resources);
+    resources.services.user = new UserService(resources);
 
     const application: express.Application = express();
 

@@ -2,16 +2,24 @@ import IModel from './IModel.interface';
 import * as mysql2 from "mysql2/promise";
 import IAdapterOptions from './IAdapterOptions.interface';
 import IServiceData from './IServiceData.interface';
+import { IServices } from './IApplicationResources.interface';
+import IApplicationResources from './IApplicationResources.interface';
 
 abstract class BaseService<ReturnModel extends IModel, AdapterOptions extends IAdapterOptions>{
     private _db: mysql2.Connection;
+    private serviceInstances: IServices;
 
-    constructor(db: mysql2.Connection) {
-        this._db = db;
+    constructor(resources: IApplicationResources) {
+        this._db = resources.databaseConnection;
+        this.serviceInstances = resources.services;
     }
 
     protected get db(): mysql2.Connection {
         return this._db;
+    }
+
+    protected get services(): IServices {
+        return this.serviceInstances;
     }
 
     abstract tableName(): string;
@@ -91,6 +99,29 @@ abstract class BaseService<ReturnModel extends IModel, AdapterOptions extends IA
                     });
             }
         )
+    }
+
+    protected async getAllFromTableByFieldNameAndValue<OwnReturnType>(tableName: string, fieldName: string, value: any): Promise<OwnReturnType[]> {
+        return new Promise((resolve, reject) => {
+            const sql: string = `SELECT * FROM \`${tableName}\` WHERE ${fieldName} = ?;`;
+            this.db.execute(sql, [value])
+                .then(async ([rows]) => {
+
+                    if (rows === undefined) {
+                        return resolve([]);
+                    }
+
+                    const items: OwnReturnType[] = [];
+
+                    for (const row of rows as mysql2.RowDataPacket[]) {
+                        items.push(row as OwnReturnType)
+                    }
+
+                    resolve(items);
+                }).catch(error => {
+                    console.log(reject(error));
+                });
+        })
     }
 
     protected async baseAdd(data: IServiceData, options: AdapterOptions): Promise<ReturnModel> {

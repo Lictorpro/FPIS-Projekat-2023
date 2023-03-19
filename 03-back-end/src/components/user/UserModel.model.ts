@@ -1,4 +1,12 @@
 import IModel from '../../common/IModel.interface';
+import PromoCodeModel from '../promo-code/PromoCodeModel';
+import EventModel from '../event/EventModel.model';
+
+export interface IUserEvent {
+    event: EventModel,
+    createdAt: Date,
+    discount: number
+}
 
 class UserModel implements IModel {
     userId: number;
@@ -13,6 +21,9 @@ class UserModel implements IModel {
     email: string;
     accessToken: string;
     promoCodeId: number;
+
+    promoCode?: PromoCodeModel = null;
+    events?: IUserEvent[] = [];
 }
 
 export default UserModel;
